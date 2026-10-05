@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ceylon Trend Mart — Admin Portal</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f6f7f9;color:#171717}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0}
+.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#1d1a18,#302a25)}
+.login-card{width:min(410px,92%);background:#fff;border-radius:18px;padding:32px;box-shadow:0 25px 70px #0005}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;margin-bottom:25px}.logo-icon{width:38px;height:38px;border-radius:11px;background:#ff9800;color:#fff;display:grid;place-items:center}
+.login-card h1{font-size:24px;margin:0 0 7px}.muted{color:#777;font-size:12px;line-height:1.5}
+.field{margin:16px 0}.field label{display:block;font-size:11px;font-weight:700;margin-bottom:7px}.field input,.field select,.field textarea{width:100%;border:1px solid #ddd;border-radius:9px;padding:11px;outline:none;background:#fff}.field input:focus,.field select:focus{border-color:#ff9800}
+.primary{background:#ff9800;color:#fff;border-radius:9px;padding:12px 17px;font-weight:800}.full{width:100%}.-note{margin-top:18px;background:#fff8e8;border:1px solid #f3d68b;border-radius:10px;padding:11px;font-size:11px;color:#805600}
+.app{display:none;min-height:100vh}.sidebar{position:fixed;left:0;top:0;bottom:0;width:235px;background:#1d1a18;color:#fff;padding:20px 14px;z-index:10}.brand{font-weight:800;padding:5px 10px 25px;display:flex;gap:9px;align-items:center}.brand-icon{width:32px;height:32px;background:#ff9800;border-radius:9px;display:grid;place-items:center}.menu-title{font-size:9px;color:#8e8884;padding:15px 11px 7px;text-transform:uppercase;letter-spacing:.8px}.navbtn{width:100%;text-align:left;background:transparent;color:#cfcac6;padding:11px 12px;border-radius:8px;font-size:11px;margin:2px 0}.navbtn.active,.navbtn:hover{background:#332e2a;color:#fff}.main{margin-left:235px;padding:24px;max-width:1500px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.top h1{margin:0;font-size:25px}.user{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #e5e5e5;padding:7px 11px;border-radius:10px;font-size:11px}.avatar{width:30px;height:30px;border-radius:50%;background:#ff9800;color:#fff;display:grid;place-items:center;font-weight:800}
+.page{display:none}.page.active{display:block}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:13px}.stat{background:#fff;border:1px solid #e6e6e6;border-radius:13px;padding:17px}.stat small{font-size:10px;color:#777}.stat strong{display:block;font-size:22px;margin-top:7px}.stat span{font-size:9px;color:#00a66a}
+.panel{background:#fff;border:1px solid #e5e5e5;border-radius:13px;padding:18px;margin-top:18px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.panel-head h2{font-size:15px;margin:0}.tools{display:flex;gap:8px;flex-wrap:wrap}.search{border:1px solid #ddd;border-radius:8px;padding:9px 11px;font-size:11px;min-width:210px}.secondary{background:#f3f3f3;border-radius:8px;padding:9px 12px;font-size:10px;font-weight:700}
+table{width:100%;border-collapse:collapse}th{text-align:left;font-size:9px;color:#777;padding:10px;border-bottom:1px solid #eee}td{padding:11px 10px;border-bottom:1px solid #f0f0f0;font-size:10px}tr:last-child td{border-bottom:0}.product{display:flex;align-items:center;gap:10px}.thumb{width:42px;height:42px;border-radius:8px;background:#f0f0f0;display:grid;place-items:center;font-size:18px}.badge{display:inline-block;padding:4px 7px;border-radius:99px;font-size:8px;font-weight:800}.green{background:#e7fff5;color:#00875b}.orange{background:#fff3db;color:#a96600}.red{background:#ffe9e7;color:#b42318}.gray{background:#eee;color:#666}.actions{display:flex;gap:5px}.iconbtn{background:#f4f4f4;border-radius:7px;padding:6px 8px;font-size:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.fullcol{grid-column:1/-1}.section-title{font-size:12px;font-weight:800;margin:20px 0 8px}.switch{display:flex;justify-content:space-between;align-items:center;border:1px solid #eee;border-radius:9px;padding:10px;font-size:10px;margin:7px 0}.toggle{width:38px;height:20px;border-radius:99px;background:#ddd;padding:2px}.toggle.on{background:#00a66a}.toggle i{display:block;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}.toggle.on i{transform:translateX(18px)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.mini{border:1px solid #eee;border-radius:10px;padding:14px}.mini b{font-size:18px}.mini small{display:block;color:#777;font-size:9px;margin-top:4px}
+.timeline{display:grid;gap:0}.event{padding:12px 0;border-bottom:1px solid #eee;font-size:10px}.event:last-child{border:0}.event b{display:block;font-size:11px}.event span{color:#777}
+.modal{position:fixed;inset:0;background:#0007;display:none;place-items:center;z-index:50;padding:20px}.modal.open{display:grid}.modalbox{width:min(900px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;padding:23px}.modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h2{font-size:18px;margin:0}.close{background:#f2f2f2;border-radius:50%;width:30px;height:30px}
+.toast{position:fixed;right:20px;bottom:20px;background:#1d1a18;color:#fff;padding:12px 16px;border-radius:9px;font-size:11px;display:none;z-index:100}.toast.show{display:block}
+@media(max-width:900px){.sidebar{width:68px}.brand span,.menu-title,.navbtn span{display:none}.navbtn{text-align:center}.main{margin-left:68px}.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.sidebar{display:none}.main{margin-left:0;padding:14px}.cards{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.fullcol{grid-column:auto}.top{align-items:flex-start}.top h1{font-size:20px}.panel{padding:13px;overflow:auto}table{min-width:720px}.tools{width:100%}.search{min-width:160px}}
+</style>
+<style>
+
+</style>
+</head>
+<body>
+
+<div id="login" class="login">
+  <div class="login-card">
+    <div class="logo"><div class="logo-icon">C</div><div>Ceylon Trend Mart<br><small style="font-size:8px;color:#777">ADMIN PORTAL</small></div></div>
+    <h1>Admin Sign In</h1>
+    <p class="muted">Manage products, inventory and customer orders from the administration portal.</p>
+    <div class="field"><label>Email</label><input id="email" value=""></div>
+    <div class="field"><label>Password</label><input id="password" type="password" value=""></div>
+    <button class="primary full" onclick="login()">Sign In</button>
+    
+  </div>
+</div>
+
+<div id="app" class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-icon">C</div><span>Ceylon Trend Mart</span></div>
+  <button class="navbtn active" onclick="page('dashboard',this)">▦ <span>Dashboard</span></button>
+  <button class="navbtn" onclick="page('products',this)">▣ <span>Products</span></button>
+  <button class="navbtn" onclick="page('inventory',this)">▤ <span>Inventory</span></button>
+  <button class="navbtn" onclick="page('orders',this)">▧ <span>Orders</span></button>
+  <div class="menu-title">Management</div>
+  <button class="navbtn" onclick="page('categories',this)">◈ <span>Categories</span></button>
+  <button class="navbtn" onclick="page('activity',this)">◷ <span>Activity Log</span></button>
+  <button class="navbtn" onclick="page('settings',this)">⚙ <span>Settings</span></button>
+  <button class="navbtn" onclick="logout()">↪ <span>Logout</span></button>
+</aside>
+
+<main class="main">
+<div class="top"><h1 id="title">Dashboard</h1><div class="user"><div class="avatar">T</div><div><b>Tharindu</b><br><small style="color:#777">Administrator</small></div></div></div>
+
+<section id="dashboard" class="page active">
+<div class="cards">
+<div class="stat"><small>Total Products</small><strong>24</strong><span>+3 this month</span></div>
+<div class="stat"><small>Inventory Units</small><strong>186</strong><span>Healthy stock</span></div>
+<div class="stat"><small>Low Stock</small><strong>4</strong><span>Needs attention</span></div>
+<div class="stat"><small>Out of Stock</small><strong>2</strong><span style="color:#b42318">Restock needed</span></div>
+<div class="stat"><small>Inventory Value</small><strong>Rs. 86,420</strong><span>Cost value</span></div>
+</div>
+<div class="grid2">
+<div class="panel"><div class="panel-head"><h2>Inventory Overview</h2></div><div class="kpis">
+<div class="mini"><b>Rs. 142,600</b><small>Potential Sales Value</small></div>
+<div class="mini"><b>Rs. 56,180</b><small>Estimated Profit</small></div>
+<div class="mini"><b>37</b><small>Units Sold This Month</small></div>
+</div></div>
+<div class="panel"><div class="panel-head"><h2>Quick Actions</h2></div><div class="tools">
+<button class="primary" onclick="openProduct()">＋ Add Product</button>
+<button class="secondary" onclick="page('inventory')">＋ Add Stock</button>
+<button class="secondary" onclick="page('orders')">View Orders</button>
+</div></div>
+</div>
+<div class="panel"><div class="panel-head"><h2>Low Stock Products</h2><button class="secondary" onclick="page('inventory')">View All</button></div>
+<table><tr><th>PRODUCT</th><th>SKU</th><th>STOCK</th><th>STATUS</th><th>ACTION</th></tr>
+<tr><td><div class="product"><div class="thumb">✂️</div><b>Eyebrow Trimmer</b></div></td><td>ET-001</td><td>3</td><td><span class="badge orange">LOW STOCK</span></td><td><button class="iconbtn" onclick="stock('Eyebrow Trimmer')">Add Stock</button></td></tr>
+<tr><td><div class="product"><div class="thumb">⌚</div><b>Smart Watch Pro</b></div></td><td>SW-BLK</td><td>0</td><td><span class="badge red">OUT OF STOCK</span></td><td><button class="iconbtn" onclick="stock('Smart Watch Pro')">Add Stock</button></td></tr>
+</table></div>
+</section>
+
+<section id="products" class="page">
+<div class="panel"><div class="panel-head"><h2>Products <span style="color:#888;font-size:10px">24 products</span></h2><div class="tools"><input class="search" placeholder="Search name, SKU, barcode..." oninput="filterProducts(this.value)"><button class="primary" onclick="openProduct()">＋ Add Product</button></div></div>
+<div class="tools" style="margin-bottom:12px"><button class="secondary">All</button><button class="secondary">In Stock</button><button class="secondary">Low Stock</button><button class="secondary">Out of Stock</button><button class="secondary">Draft</button><button class="secondary">Featured</button></div>
+<table id="productTable"><tr><th>PRODUCT</th><th>SKU</th><th>CATEGORY</th><th>PRICE</th><th>STOCK</th><th>STATUS</th><th>ACTIONS</th></tr>
+<tr data-search="eyebrow trimmer et-001 beauty trimmer"><td><div class="product"><div class="thumb">✂️</div><b>Eyebrow Trimmer</b></div></td><td>ET-001</td><td>Beauty</td><td>Rs. 890</td><td>3</td><td><span class="badge orange">LOW STOCK</span></td><td class="actions"><button class="iconbtn" onclick="openProduct('Eyebrow Trimmer')">Edit</button><button class="iconbtn" onclick="stock('Eyebrow Trimmer')">Stock</button></td></tr>
+<tr data-search="smart watch pro sw-blk electronics watch black silver"><td><div class="product"><div class="thumb">⌚</div><b>Smart Watch Pro</b></div></td><td>SW-BLK</td><td>Electronics</td><td>Rs. 4,500</td><td>0</td><td><span class="badge red">OUT OF STOCK</span></td><td class="actions"><button class="iconbtn" onclick="openProduct('Smart Watch Pro')">Edit</button><button class="iconbtn" onclick="stock('Smart Watch Pro')">Stock</button></td></tr>
+<tr data-search="304 stainless steel car cup cc-304 home kitchen"><td><div class="product"><div class="thumb">🥤</div><b>304 Stainless Steel Car Cup</b></div></td><td>CC-304</td><td>Home & Kitchen</td><td>Rs. 1,490</td><td>18</td><td><span class="badge green">IN STOCK</span></td><td class="actions"><button class="iconbtn" onclick="openProduct('304 Stainless Steel Car Cup')">Edit</button><button class="iconbtn" onclick="stock('304 Stainless Steel Car Cup')">Stock</button></td></tr>
+<tr data-search="mahogany organizer mh-001 home kitchen"><td><div class="product"><div class="thumb">🪵</div><b>Mahogany Multi-Purpose Organizer</b></div></td><td>MH-001</td><td>Home & Kitchen</td><td>Rs. 2,250</td><td>12</td><td><span class="badge green">IN STOCK</span></td><td class="actions"><button class="iconbtn" onclick="openProduct('Mahogany Organizer')">Edit</button><button class="iconbtn">Stock</button></td></tr>
+</table></div>
+</section>
+
+<section id="inventory" class="page">
+<div class="cards"><div class="stat"><small>Available</small><strong>186</strong></div><div class="stat"><small>Reserved</small><strong>8</strong></div><div class="stat"><small>Sold</small><strong>37</strong></div><div class="stat"><small>Returned</small><strong>3</strong></div><div class="stat"><small>Damaged</small><strong>2</strong></div></div>
+<div class="panel"><div class="panel-head"><h2>Inventory</h2><div class="tools"><input class="search" placeholder="Search inventory..."><button class="secondary">Export</button></div></div>
+<table><tr><th>PRODUCT</th><th>SKU</th><th>AVAILABLE</th><th>RESERVED</th><th>LOW LIMIT</th><th>STATUS</th><th>ACTION</th></tr>
+<tr><td>Eyebrow Trimmer</td><td>ET-001</td><td>3</td><td>0</td><td>5</td><td><span class="badge orange">LOW STOCK</span></td><td><button class="iconbtn" onclick="stock('Eyebrow Trimmer')">Add Stock</button></td></tr>
+<tr><td>Smart Watch Pro — Black</td><td>SW-BLK</td><td>0</td><td>0</td><td>5</td><td><span class="badge red">OUT OF STOCK</span></td><td><button class="iconbtn" onclick="stock('Smart Watch Pro')">Add Stock</button></td></tr>
+<tr><td>304 Stainless Steel Car Cup</td><td>CC-304</td><td>18</td><td>2</td><td>5</td><td><span class="badge green">IN STOCK</span></td><td><button class="iconbtn" onclick="stock('304 Stainless Steel Car Cup')">Add Stock</button></td></tr>
+</table></div>
+<div class="panel"><div class="panel-head"><h2>Recent Inventory Transactions</h2></div>
+<div class="timeline"><div class="event"><b>+50 — Eyebrow Trimmer</b><span>05 Oct 2026 · Added stock · Admin: Tharindu</span></div><div class="event"><b>-1 — Order #CTM1025</b><span>06 Oct 2026 · Sold · Admin: System</span></div><div class="event"><b>+1 — Eyebrow Trimmer</b><span>07 Oct 2026 · Returned · Admin: Tharindu</span></div><div class="event"><b>-2 — Smart Watch</b><span>08 Oct 2026 · Damaged · Admin: Tharindu</span></div></div></div>
+</section>
+
+<section id="orders" class="page"><div class="panel"><div class="panel-head"><h2>Orders</h2><div class="tools"><input class="search" placeholder="Search order/customer..."><button class="secondary">Filter</button></div></div>
+<table><tr><th>ORDER</th><th>CUSTOMER</th><th>ITEMS</th><th>TOTAL</th><th>STATUS</th><th>ACTION</th></tr>
+<tr><td><b>#CTM1025</b><br><small>05 Oct 2026</small></td><td>Nimali Perera<br><small>07xxxxxxxx</small></td><td>Eyebrow Trimmer ×1</td><td>Rs. 1,160</td><td><span class="badge orange">PROCESSING</span></td><td><button class="iconbtn" onclick="toast('Order status editor opened')">Update Status</button></td></tr>
+<tr><td><b>#CTM1024</b><br><small>05 Oct 2026</small></td><td>Kasun Silva<br><small>07xxxxxxxx</small></td><td>Car Cup ×2</td><td>Rs. 3,250</td><td><span class="badge green">CONFIRMED</span></td><td><button class="iconbtn">Update Status</button></td></tr>
+</table></div></section>
+
+<section id="categories" class="page"><div class="panel"><div class="panel-head"><h2>Categories</h2><button class="primary" onclick="toast('Category creation form opened')">＋ Add Category</button></div>
+<table><tr><th>CATEGORY</th><th>SUB-CATEGORIES</th><th>PRODUCTS</th><th>STATUS</th><th>ACTION</th></tr>
+<tr><td><b>Electronics</b></td><td>Smart Watches, Accessories, Cables</td><td>8</td><td><span class="badge green">ACTIVE</span></td><td><button class="iconbtn">Edit</button></td></tr>
+<tr><td><b>Beauty & Personal Care</b></td><td>Trimmers, Skincare, Hair Care</td><td>7</td><td><span class="badge green">ACTIVE</span></td><td><button class="iconbtn">Edit</button></td></tr>
+<tr><td><b>Home & Kitchen</b></td><td>Organizers, Kitchen, Car Accessories</td><td>9</td><td><span class="badge green">ACTIVE</span></td><td><button class="iconbtn">Edit</button></td></tr>
+</table></div></section>
+
+<section id="activity" class="page"><div class="panel"><div class="panel-head"><h2>Product Activity Log</h2><button class="secondary">Export Log</button></div>
+<div class="timeline"><div class="event"><b>Price changed — Eyebrow Trimmer</b><span>Rs. 850 → Rs. 890 · 05 Oct 2026 14:32 · Tharindu</span></div><div class="event"><b>Stock added — Eyebrow Trimmer</b><span>+50 units · 05 Oct 2026 14:40 · Tharindu</span></div><div class="event"><b>Product image updated — Car Cup</b><span>Primary image replaced · 04 Oct 2026 16:21 · Tharindu</span></div><div class="event"><b>Order inventory adjustment — #CTM1025</b><span>-1 unit · 04 Oct 2026 17:10 · System</span></div></div></div></section>
+
+<section id="settings" class="page"><div class="grid2"><div class="panel"><h2 style="font-size:15px">Inventory Rules</h2><div class="switch">Prevent overselling <button class="toggle on"><i></i></button></div><div class="switch">Auto out-of-stock status <button class="toggle on"><i></i></button></div><div class="switch">Auto hide when out of stock <button class="toggle"><i></i></button></div><div class="switch">Auto restore when stock added <button class="toggle on"><i></i></button></div></div><div class="panel"><h2 style="font-size:15px">Store Settings</h2><div class="field"><label>Default Currency</label><select><option>LKR — Sri Lankan Rupee</option></select></div><div class="field"><label>Default Low Stock Threshold</label><input value="5" type="number"></div><button class="primary" onclick="toast('Settings saved')">Save Settings</button></div></div></section>
+</main>
+</div>
+
+<div id="productModal" class="modal"><div class="modalbox"><div class="modalhead"><h2 id="modalTitle">Add Product</h2><button class="close" onclick="closeModal()">×</button></div>
+<div class="section-title">Basic Product Information</div>
+<div id="productExtra"></div><div id="variationArea"></div>
+<div class="section-title">Pricing</div><div class="form-grid"><div class="field"><label>Cost Price (LKR)</label><input id="cost" type="number" value="478.87" oninput="calcProfit()"></div><div class="field"><label>Selling Price (LKR)</label><input id="sell" type="number" value="890" oninput="calcProfit()"></div><div class="field"><label>Previous Price</label><input type="number" value="950"></div><div class="field"><label>Calculated Profit</label><input id="profit" value="411.13" readonly></div></div>
+<div class="section-title">Inventory</div><div class="form-grid"><div class="field"><label>Initial Stock</label><input type="number" value="0"></div><div class="field"><label>Low Stock Threshold</label><input type="number" value="5"></div><div class="field"><label>Barcode</label><input placeholder="Optional"></div><div class="field"><label>Weight (g)</label><input type="number" placeholder="0"></div></div>
+<div class="section-title">Product Options</div><div class="switch">Featured Product <button class="toggle"><i></i></button></div><div class="switch">COD Available <button class="toggle on"><i></i></button></div><div class="switch">Return Eligible <button class="toggle on"><i></i></button></div><div class="switch">New Arrival <button class="toggle"><i></i></button></div>
+<div class="section-title">Variations</div><div class="panel" style="margin:0;background:#fafafa"><div class="muted">Color, Size, Model, Storage, Material, Pack Size and custom attributes can be added. Each generated variation can have its own SKU, price, cost, stock, image, barcode and status.</div><button class="secondary" style="margin-top:10px" onclick="toast('Variation builder opened')">＋ Add Variation Attribute</button></div>
+<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px"><button class="secondary" onclick="closeModal()">Cancel</button><button class="primary" onclick="saveProduct()">Save Product</button></div>
+</div></div>
+
+<div id="stockModal" class="modal"><div class="modalbox" style="max-width:430px"><div class="modalhead"><h2>Add Inventory</h2><button class="close" onclick="closeStock()">×</button></div><p class="muted" id="stockProduct"></p><div class="field"><label>Transaction Type</label><select id="stockType"><option>Add Stock</option><option>Remove Stock</option><option>Returned — Resellable</option><option>Damaged</option></select></div><div class="field"><label>Quantity</label><input id="stockQty" type="number" min="1" value="10"></div><div class="field"><label>Note</label><textarea placeholder="Reason / supplier / reference"></textarea></div><button class="primary full" onclick="saveStock()">Record Transaction</button></div></div>
+
+<div id="orderModal" class="modal"><div class="modalbox" style="max-width:520px">
+ <div class="modalhead"><h2>Update Order <span id="orderIdText"></span></h2><button class="close" onclick="closeOrder()">×</button></div>
+ <div class="panel" style="margin-top:14px"><div id="orderInfo" class="muted"></div></div>
+ <div class="field"><label>Order Status</label><select id="newOrderStatus">
+  <option>Pending</option><option>Confirmed</option><option>Processing</option><option>Dispatched</option><option>Delivered</option><option>Cancelled</option><option>Returned</option>
+ </select></div>
+ <div style="display:flex;justify-content:flex-end;gap:8px"><button class="secondary" onclick="closeOrder()">Cancel</button><button class="primary" onclick="saveOrderStatus()">Save Status</button></div>
+</div></div>
+<div id="categoryModal" class="modal"><div class="modalbox" style="max-width:520px">
+ <div class="modalhead"><h2>Category</h2><button class="close" onclick="closeCategory()">×</button></div>
+ <div class="field"><label>Category Name</label><input id="catName" placeholder="Electronics"></div>
+ <div class="field"><label>Sub-categories (comma separated)</label><input id="catSubs" placeholder="Smart Watches, Accessories, Cables"></div>
+ <div style="display:flex;justify-content:flex-end;gap:8px"><button class="secondary" onclick="closeCategory()">Cancel</button><button class="primary" onclick="saveCategory()">Save Category</button></div>
+</div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const STORE_KEY="ctmStoreAdminV3";
+const seed={
+ products:[
+  {id:"P001",name:"Eyebrow Trimmer",sku:"ET-001",category:"Beauty & Personal Care",cost:478.87,price:890,stock:3,threshold:5,status:"Active",featured:false,variations:[]},
+  {id:"P002",name:"Smart Watch Pro",sku:"SW-BLK",category:"Electronics",cost:2800,price:4500,stock:0,threshold:5,status:"Active",featured:true,variations:[
+    {name:"Black",sku:"SW-BLK",cost:2800,price:4500,stock:0},
+    {name:"Silver",sku:"SW-SLV",cost:2900,price:4700,stock:0}
+  ]},
+  {id:"P003",name:"304 Stainless Steel Car Cup",sku:"CC-304",category:"Home & Kitchen",cost:800,price:1490,stock:18,threshold:5,status:"Active",featured:false,variations:[]},
+  {id:"P004",name:"Mahogany Multi-Purpose Organizer",sku:"MH-001",category:"Home & Kitchen",cost:1200,price:2250,stock:12,threshold:5,status:"Active",featured:false,variations:[]}
+ ],
+ categories:[
+  {name:"Electronics",subs:["Smart Watches","Accessories","Cables"],products:8,status:"Active"},
+  {name:"Beauty & Personal Care",subs:["Trimmers","Skincare","Hair Care"],products:7,status:"Active"},
+  {name:"Home & Kitchen",subs:["Organizers","Kitchen","Car Accessories"],products:9,status:"Active"}
+ ],
+ orders:[
+  {id:"#CTM1025",customer:"Nimali Perera",phone:"07xxxxxxxx",items:[{product:"Eyebrow Trimmer",qty:1,price:890}],delivery:270,status:"Processing",date:"05 Oct 2026"},
+  {id:"#CTM1024",customer:"Kasun Silva",phone:"07xxxxxxxx",items:[{product:"304 Stainless Steel Car Cup",qty:2,price:1490}],delivery:270,status:"Confirmed",date:"05 Oct 2026"}
+ ],
+ transactions:[
+  {date:"05 Oct 2026 14:40",text:"+50 — Eyebrow Trimmer",detail:"Added stock · Admin: Tharindu",qty:50},
+  {date:"06 Oct 2026 10:15",text:"-1 — Order #CTM1025",detail:"Sold · System",qty:-1},
+  {date:"07 Oct 2026 11:20",text:"+1 — Eyebrow Trimmer",detail:"Returned · Admin: Tharindu",qty:1},
+  {date:"08 Oct 2026 09:30",text:"-2 — Smart Watch",detail:"Damaged · Admin: Tharindu",qty:-2}
+ ],
+ activity:[
+  {date:"05 Oct 2026 14:32",text:"Price changed — Eyebrow Trimmer",detail:"Rs. 850 → Rs. 890 · Tharindu"},
+  {date:"05 Oct 2026 14:40",text:"Stock added — Eyebrow Trimmer",detail:"+50 units · Tharindu"},
+  {date:"04 Oct 2026 16:21",text:"Product image updated — Car Cup",detail:"Primary image replaced · Tharindu"},
+  {date:"04 Oct 2026 17:10",text:"Order inventory adjustment — #CTM1025",detail:"-1 unit · System"}
+ ],
+ settings:{threshold:5,preventOversell:true,autoOut:true,autoHide:false,autoRestore:true}
+};
+let state=load();
+
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function load(){
+ try{
+  const x=JSON.parse(localStorage.getItem(STORE_KEY));
+  if(x&&x.products&&x.orders)return x;
+ }catch(e){}
+ return clone(seed);
+}
+function persist(){
+  localStorage.setItem(STORE_KEY,JSON.stringify(state));
+  localStorage.setItem("ctmStoreSync",String(Date.now()));
+}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function money(n){return "Rs. "+Number(n||0).toLocaleString("en-LK",{minimumFractionDigits:2,maximumFractionDigits:2})}
+function stockStatus(p){
+ if(p.stock<=0)return ["OUT OF STOCK","red"];
+ if(p.stock<=Number(p.threshold||5))return ["LOW STOCK","orange"];
+ return ["IN STOCK","green"];
+}
+function addActivity(text,detail){
+ state.activity.unshift({date:new Date().toLocaleString("en-GB",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}),text,detail});
+}
+function addTxn(text,detail,qty){
+ state.transactions.unshift({date:new Date().toLocaleString("en-GB",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}),text,detail,qty});
+}
+function login(){
+ let e=document.getElementById("email").value,p=document.getElementById("password").value;
+ if(e==="admin@ceylontrendmart.com"&&p==="ChangeMe@2026!"){
+  document.getElementById("login").style.display="none";document.getElementById("app").style.display="block";
+  persist();renderAll();toast("Login successful");
+ }else toast("Invalid credentials");
+}
+function logout(){document.getElementById("app").style.display="none";document.getElementById("login").style.display="grid"}
+const titles={dashboard:"Dashboard",products:"Products",inventory:"Inventory",orders:"Orders",categories:"Categories",activity:"Activity Log",settings:"Settings"};
+function page(id,btn){
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.getElementById("title").textContent=titles[id];
+ document.querySelectorAll(".navbtn").forEach(x=>x.classList.remove("active"));
+ if(btn)btn.classList.add("active");
+ renderAll();
+}
+function adminStatusToCustomer(s){return ({Pending:"Order Received",Confirmed:"Order Confirmed",Processing:"Preparing for Dispatch",Dispatched:"Dispatched",Delivered:"Delivered",Cancelled:"Cancelled",Returned:"Returned"}[s]||"Order Received");}
+function customerStatusToAdmin(s){return ({"Order Received":"Pending","Order Confirmed":"Confirmed","Preparing for Dispatch":"Processing","Dispatched":"Dispatched","Delivered":"Delivered",Cancelled:"Cancelled",Returned:"Returned"}[s]||"Pending");}
+function syncCustomerOrders(){
+  let raw=[]; try{raw=JSON.parse(localStorage.getItem("ctmOrders")||"[]")}catch(e){}
+  if(!Array.isArray(raw)||!raw.length)return false;
+  let changed=false;
+  raw.forEach(co=>{
+    const id="#"+String(co.orderNumber||"").replace(/^#/,"");
+    if(!id||id==="#")return;
+    let o=state.orders.find(x=>x.id===id);
+    if(!o){
+      o={id,customer:co.name||"Customer",phone:co.phone||"",items:(co.items||[]).map(i=>({product:i.name,productId:i.id,qty:Number(i.qty)||0,price:Number(i.price)||0})),delivery:Math.max(0,Number(co.total||0)-((co.items||[]).reduce((t,i)=>t+(Number(i.qty)||0)*(Number(i.price)||0),0))),status:customerStatusToAdmin(co.status),date:new Date(co.createdAt||Date.now()).toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}),source:"customer"};
+      state.orders.unshift(o); addActivity("New customer order",`${id} · ${o.customer}`); changed=true;
+    }
+  });
+  if(changed){localStorage.setItem(STORE_KEY,JSON.stringify(state));localStorage.setItem("ctmStoreSync",String(Date.now()));}
+  return changed;
+}
+function syncCustomerFromAdmin(){
+  let raw=[];try{raw=JSON.parse(localStorage.getItem("ctmOrders")||"[]")}catch(e){}
+  if(!Array.isArray(raw)||!raw.length)return;
+  raw.forEach(co=>{const o=state.orders.find(x=>x.id==="#"+String(co.orderNumber||"").replace(/^#/,""));if(o){co.status=adminStatusToCustomer(o.status);co.adminUpdatedAt=new Date().toISOString();}});
+  localStorage.setItem("ctmOrders",JSON.stringify(raw));
+}
+function renderAll(){syncCustomerOrders();renderDashboard();renderProducts();renderInventory();renderOrders();renderCategories();renderActivity();renderSettings()}
+function renderDashboard(){
+ let units=state.products.reduce((a,p)=>a+Number(p.stock||0),0);
+ let low=state.products.filter(p=>p.stock>0&&p.stock<=p.threshold).length;
+ let out=state.products.filter(p=>p.stock<=0).length;
+ let cost=state.products.reduce((a,p)=>a+p.stock*p.cost,0);
+ let potential=state.products.reduce((a,p)=>a+p.stock*p.price,0);
+ let sold=state.orders.reduce((a,o)=>a+o.items.reduce((b,i)=>b+i.qty,0),0);
+ let revenue=state.orders.reduce((a,o)=>a+o.items.reduce((b,i)=>b+i.qty*i.price,0)+Number(o.delivery||0),0);
+ let estProfit=state.products.reduce((a,p)=>a+p.stock*(p.price-p.cost),0);
+ document.getElementById("dashboard").innerHTML=`
+ <div class="cards">
+  <div class="stat"><small>Total Products</small><strong>${state.products.length}</strong><span>${state.products.filter(p=>p.status==="Active").length} active</span></div>
+  <div class="stat"><small>Inventory Units</small><strong>${units}</strong><span>Current available</span></div>
+  <div class="stat"><small>Low Stock</small><strong>${low}</strong><span>${low?"Needs attention":"Healthy"}</span></div>
+  <div class="stat"><small>Out of Stock</small><strong>${out}</strong><span style="color:#b42318">${out?"Restock needed":"None"}</span></div>
+  <div class="stat"><small>Inventory Value</small><strong>${money(cost)}</strong><span>Cost value</span></div>
+ </div>
+ <div class="grid2">
+  <div class="panel"><div class="panel-head"><h2>Inventory Overview</h2></div><div class="kpis">
+   <div class="mini"><b>${money(potential)}</b><small>Potential Sales Value</small></div>
+   <div class="mini"><b>${money(estProfit)}</b><small>Current Estimated Profit</small></div>
+   <div class="mini"><b>${sold}</b><small>Units Sold in Orders</small></div>
+  </div></div>
+  <div class="panel"><div class="panel-head"><h2>Order Revenue</h2></div><div class="kpis">
+   <div class="mini"><b>${money(revenue)}</b><small>Order Value + Delivery</small></div>
+   <div class="mini"><b>${state.orders.length}</b><small>Total Orders</small></div>
+   <div class="mini"><b>${state.products.reduce((a,p)=>a+p.stock,0)}</b><small>Units Remaining</small></div>
+  </div></div>
+ </div>
+ <div class="panel"><div class="panel-head"><h2>Low / Out of Stock Products</h2><button class="secondary" onclick="page('inventory')">View Inventory</button></div>
+ <table><tr><th>PRODUCT</th><th>SKU</th><th>STOCK</th><th>STATUS</th><th>ACTION</th></tr>
+ ${state.products.filter(p=>p.stock<=p.threshold).map(p=>{let s=stockStatus(p);return `<tr><td><div class="product"><div class="thumb">📦</div><b>${esc(p.name)}</b></div></td><td>${esc(p.sku)}</td><td>${p.stock}</td><td><span class="badge ${s[1]}">${s[0]}</span></td><td><button class="iconbtn" onclick="stock('${p.id}')">Add Stock</button></td></tr>`}).join("")||"<tr><td colspan=5>No low-stock products.</td></tr>"}
+ </table></div>`;
+}
+function renderProducts(){
+ document.getElementById("products").innerHTML=`
+ <div class="panel"><div class="panel-head"><h2>Products <span style="color:#888;font-size:10px">${state.products.length} products</span></h2><div class="tools"><input id="productSearch" class="search" placeholder="Search name, SKU, barcode..." oninput="filterProducts(this.value)"><button class="primary" onclick="openProduct()">＋ Add Product</button></div></div>
+ <div class="tools" style="margin-bottom:12px"><button class="secondary" onclick="filterStatus('all')">All</button><button class="secondary" onclick="filterStatus('in')">In Stock</button><button class="secondary" onclick="filterStatus('low')">Low Stock</button><button class="secondary" onclick="filterStatus('out')">Out of Stock</button><button class="secondary" onclick="filterStatus('draft')">Draft</button><button class="secondary" onclick="filterStatus('featured')">Featured</button></div>
+ <table id="productTable"><tr><th><input type="checkbox" onchange="toggleAll(this)"></th><th>PRODUCT</th><th>SKU</th><th>CATEGORY</th><th>PRICE</th><th>STOCK</th><th>STATUS</th><th>ACTIONS</th></tr>
+ ${state.products.map(p=>{let s=stockStatus(p);return `<tr data-search="${esc((p.name+" "+p.sku+" "+p.category).toLowerCase())}" data-status="${s[1]}" data-featured="${p.featured}" data-product-status="${p.status.toLowerCase()}">
+ <td><input class="prodcheck" type="checkbox" value="${p.id}"></td><td><div class="product"><div class="thumb">📦</div><b>${esc(p.name)}</b></div></td><td>${esc(p.sku)}</td><td>${esc(p.category)}</td><td>${money(p.price)}</td><td>${p.stock}</td><td><span class="badge ${s[1]}">${s[0]}</span></td>
+ <td class="actions"><button class="iconbtn" onclick="openProduct('${p.id}')">Edit</button><button class="iconbtn" onclick="duplicateProduct('${p.id}')">Clone</button><button class="iconbtn" onclick="stock('${p.id}')">Stock</button><button class="iconbtn" onclick="archiveProduct('${p.id}')">Archive</button></td></tr>`}).join("")}</table>
+ <div style="margin-top:14px" class="tools"><button class="secondary" onclick="bulkArchive()">Archive Selected</button><button class="secondary" onclick="bulkFeature()">Feature Selected</button></div>
+ </div>`;
+}
+function filterProducts(q){q=q.toLowerCase();document.querySelectorAll("#productTable tr[data-search]").forEach(r=>r.style.display=r.dataset.search.includes(q)?"":"none")}
+function filterStatus(x){document.querySelectorAll("#productTable tr[data-search]").forEach(r=>{let show=x==="all"||(x==="in"&&r.dataset.status==="green")||(x==="low"&&r.dataset.status==="orange")||(x==="out"&&r.dataset.status==="red")||(x==="draft"&&r.dataset.productStatus==="draft")||(x==="featured"&&r.dataset.featured==="true");r.style.display=show?"":"none"})}
+function toggleAll(c){document.querySelectorAll(".prodcheck").forEach(x=>x.checked=c.checked)}
+function getProduct(id){return state.products.find(p=>p.id===id)}
+function closeModal(){document.getElementById("productModal").classList.remove("open")}
+function openProduct(id=""){
+ let p=id?getProduct(id):null;
+ document.getElementById("productModal").classList.add("open");
+ document.getElementById("modalTitle").textContent=p?"Edit Product":"Add Product";
+ document.getElementById("cost").value=p?.cost??478.87;
+ document.getElementById("sell").value=p?.price??890;
+ document.getElementById("productExtra").innerHTML=productExtraHTML(p);
+ const nameEl=document.getElementById("pname");
+ nameEl.dataset.id=id||"";
+ calcProfit();
+ renderVariationBuilder(p);
+ setTimeout(()=>nameEl.focus(),0);
+}
+
+function productExtraHTML(p){
+ const categories = state.categories.map(c=>`<option value="${esc(c.name)}" ${p?.category===c.name?"selected":""}>${esc(c.name)}</option>`).join("");
+ return `<div class="form-grid">
+  <div class="field fullcol"><label>Product Name <span style="color:#c00">*</span></label><input id="pname" value="${esc(p?.name||"")}" placeholder="Enter product name" autocomplete="off"></div>
+  <div class="field"><label>SKU</label><input id="psku" value="${esc(p?.sku||"")}" placeholder="SKU-001"></div>
+  <div class="field"><label>Category</label><select id="pcat">${categories}</select></div>
+  <div class="field"><label>Status</label><select id="pstatus"><option value="Active" ${p?.status==="Active"||!p?"selected":""}>Active</option><option value="Draft" ${p?.status==="Draft"?"selected":""}>Draft</option><option value="Disabled" ${p?.status==="Disabled"?"selected":""}>Disabled</option></select></div>
+  <div class="field"><label>Initial / Current Stock</label><input id="pstock" type="number" min="0" value="${p?.stock??0}"></div>
+  <div class="field"><label>Low Stock Threshold</label><input id="pthreshold" type="number" min="0" value="${p?.threshold??state.settings.threshold}"></div>
+  <div class="field"><label>Barcode</label><input id="pbarcode" value="${esc(p?.barcode||"")}" placeholder="Optional"></div>
+  <div class="field"><label>Weight (g)</label><input id="pweight" type="number" min="0" value="${p?.weight??""}" placeholder="Optional"></div>
+  <div class="field fullcol"><label>Product Image URL</label><input id="pimage" type="url" value="${esc(p?.image||"")}" placeholder="https://example.com/product-image.jpg"><small class="muted">Use a direct public image URL ending in .jpg, .jpeg, .png or .webp. The  stores the URL; it does not upload the image.</small></div>
+  <div class="field fullcol"><label>Description</label><textarea id="pdesc" placeholder="Product description, specifications, features...">${esc(p?.description||"")}</textarea></div>
+ </div>`;
+}
+
+function calcProfit(){let c=parseFloat(document.getElementById("cost").value)||0,s=parseFloat(document.getElementById("sell").value)||0;document.getElementById("profit").value=(s-c).toFixed(2)}
+function renderVariationBuilder(p){
+ let box=document.getElementById("variationArea");if(!box)return;
+ box.innerHTML=`<div class="section-title">Variations</div>
+ <div class="panel" style="margin:0;background:#fafafa">
+ <div class="form-grid"><div class="field"><label>Attribute Name</label><input id="varAttr" placeholder="Color / Size / Model"></div>
+ <div class="field"><label>Values (comma separated)</label><input id="varValues" placeholder="Black, White, Red"></div></div>
+ <button class="secondary" onclick="addVariationAttribute()">＋ Add Variation Attribute</button>
+ <div id="variationList" style="margin-top:12px">${renderVariations(p)}</div></div>`;
+}
+function renderVariations(p){
+ if(!p?.variations?.length)return `<div class="muted">No variations yet. Add an attribute above.</div>`;
+ return p.variations.map((v,i)=>`<div style="border:1px solid #ddd;border-radius:9px;padding:10px;margin:7px 0;background:#fff">
+ <div class="form-grid"><div class="field"><label>Variation</label><input value="${esc(v.name)}" onchange="changeVariation(${i},'name',this.value)"></div><div class="field"><label>SKU</label><input value="${esc(v.sku)}" onchange="changeVariation(${i},'sku',this.value)"></div><div class="field"><label>Cost</label><input type="number" value="${v.cost}" onchange="changeVariation(${i},'cost',this.value)"></div><div class="field"><label>Price</label><input type="number" value="${v.price}" onchange="changeVariation(${i},'price',this.value)"></div><div class="field"><label>Stock</label><input type="number" value="${v.stock}" onchange="changeVariation(${i},'stock',this.value)"></div><div class="field"><label>Barcode</label><input value="${esc(v.barcode||"")}" onchange="changeVariation(${i},'barcode',this.value)"></div></div>
+ <button class="iconbtn" onclick="removeVariation(${i})">Remove Variation</button></div>`).join("");
+}
+function addVariationAttribute(){
+ let id=document.getElementById("pname").dataset.id,p=getProduct(id);
+ if(!p){toast("Save the product first, then add variations.");return}
+ let attr=document.getElementById("varAttr").value.trim(), vals=document.getElementById("varValues").value.split(",").map(x=>x.trim()).filter(Boolean);
+ if(!attr||!vals.length){toast("Enter an attribute name and at least one value.");return}
+ p.variations=p.variations||[];
+ vals.forEach(v=>p.variations.push({name:`${attr}: ${v}`,sku:`${p.sku}-${v.replace(/\\s+/g,"-").toUpperCase()}`,cost:p.cost,price:p.price,stock:0}));
+ persist();renderVariationBuilder(p);renderProducts();toast("Variation(s) added");
+}
+function changeVariation(i,k,v){
+ let p=getProduct(document.getElementById("pname").dataset.id);if(!p)return;
+ p.variations[i][k]=["cost","price","stock"].includes(k)?Number(v):v;p.stock=p.variations.reduce((a,x)=>a+Number(x.stock||0),0);persist();renderAll();
+}
+function removeVariation(i){let p=getProduct(document.getElementById("pname").dataset.id);if(!p)return;p.variations.splice(i,1);p.stock=p.variations.reduce((a,x)=>a+Number(x.stock||0),0);persist();renderVariationBuilder(p);renderProducts();toast("Variation removed")}
+function saveProduct(){
+ const nameEl=document.getElementById("pname");
+ if(!nameEl){toast("Product form failed to load. Please close and reopen Add Product.");return;}
+ const name=nameEl.value.trim();
+ if(!name){toast("Product name is required.");nameEl.focus();return;}
+ const id=nameEl.dataset.id||"";
+ let p=id?getProduct(id):{id:"P"+String(Date.now()).slice(-6),variations:[]};
+ if(!p)return;
+ const oldStock=Number(p.stock||0);
+ const newStock=Math.max(0,Number(document.getElementById("pstock")?.value||0));
+ p.name=name;
+ p.sku=document.getElementById("psku")?.value.trim()||("SKU-"+p.id);
+ p.category=document.getElementById("pcat")?.value||"Uncategorized";
+ p.status=document.getElementById("pstatus")?.value||"Active";
+ p.cost=Number(document.getElementById("cost")?.value||0);
+ p.price=Number(document.getElementById("sell")?.value||0);
+ p.threshold=Math.max(0,Number(document.getElementById("pthreshold")?.value||5));
+ p.stock=newStock;
+ p.barcode=document.getElementById("pbarcode")?.value.trim()||"";
+ p.weight=Number(document.getElementById("pweight")?.value||0);
+ p.description=document.getElementById("pdesc")?.value.trim()||"";
+ p.image=document.getElementById("pimage")?.value.trim()||"";
+ if(!id)state.products.push(p);
+ if(oldStock!==newStock){const q=newStock-oldStock;addTxn(`${q>=0?"+":""}${q} — ${p.name}`,`${q>=0?"Added":"Removed"} stock · Admin: Tharindu`,q);}
+ addActivity(`${id?"Product updated":"Product created"} — ${p.name}`,`Price ${money(p.price)} · Stock ${p.stock} · Tharindu`);
+ persist();
+ closeModal();
+ renderAll();
+ toast(id?"Product updated successfully":"Product added successfully");
+}
+
+function duplicateProduct(id){let p=clone(getProduct(id));p.id="P"+String(Date.now()).slice(-6);p.sku=p.sku+"-COPY";p.stock=0;p.variations=(p.variations||[]).map(v=>({...v,stock:0,sku:v.sku+"-COPY"}));p.name=p.name+" Copy";state.products.push(p);addActivity("Product duplicated",`${p.name} · New ID ${p.id}`);persist();renderAll();toast("Product duplicated with zero stock")}
+function archiveProduct(id){let p=getProduct(id);if(!p)return;if(!confirm(`Archive ${p.name}?`))return;p.status="Archived";addActivity("Product archived",p.name+" · Tharindu");persist();renderAll();toast("Product archived")}
+function bulkArchive(){let ids=[...document.querySelectorAll(".prodcheck:checked")].map(x=>x.value);if(!ids.length)return toast("Select products first");if(!confirm(`Archive ${ids.length} selected product(s)?`))return;ids.forEach(id=>{let p=getProduct(id);if(p)p.status="Archived"});addActivity("Bulk archive",`${ids.length} products · Tharindu`);persist();renderAll();toast("Selected products archived")}
+function bulkFeature(){let ids=[...document.querySelectorAll(".prodcheck:checked")].map(x=>x.value);if(!ids.length)return toast("Select products first");ids.forEach(id=>{let p=getProduct(id);if(p)p.featured=true});persist();renderAll();toast("Selected products marked featured")}
+function stock(id){let p=getProduct(id);if(!p)return;document.getElementById("stockModal").classList.add("open");document.getElementById("stockModal").dataset.id=id;document.getElementById("stockProduct").textContent=`Product: ${p.name} · Current stock: ${p.stock}`}
+function closeStock(){document.getElementById("stockModal").classList.remove("open")}
+function saveStock(){
+ let id=document.getElementById("stockModal").dataset.id,p=getProduct(id),type=document.getElementById("stockType").value,q=Number(document.getElementById("stockQty").value||0);
+ if(!p||q<=0)return toast("Enter a valid quantity.");
+ let delta=type==="Add Stock"||type==="Returned — Resellable"?q:-q;
+ if(type==="Damaged")delta=-q;
+ if(p.stock+delta<0)return toast("Cannot remove more stock than available.");
+ p.stock+=delta;
+ addTxn(`${delta>=0?"+":""}${delta} — ${p.name}`,`${type} · Admin: Tharindu`,delta);
+ addActivity(`Inventory changed — ${p.name}`,`${type}: ${Math.abs(delta)} units · Tharindu`);
+ persist();closeStock();renderAll();toast("Inventory updated successfully");
+}
+function renderInventory(){
+ let units=state.products.reduce((a,p)=>a+p.stock,0),reserved=0,sold=state.orders.reduce((a,o)=>a+o.items.reduce((b,i)=>b+i.qty,0),0);
+ document.getElementById("inventory").innerHTML=`<div class="cards"><div class="stat"><small>Available</small><strong>${units}</strong></div><div class="stat"><small>Reserved</small><strong>${reserved}</strong></div><div class="stat"><small>Sold</small><strong>${sold}</strong></div><div class="stat"><small>Returned</small><strong>${state.transactions.filter(x=>x.qty>0&&x.detail.includes("Returned")).reduce((a,x)=>a+x.qty,0)}</strong></div><div class="stat"><small>Damaged</small><strong>${state.transactions.filter(x=>x.detail.includes("Damaged")).reduce((a,x)=>a+Math.abs(x.qty),0)}</strong></div></div>
+ <div class="panel"><div class="panel-head"><h2>Inventory</h2><div class="tools"><input class="search" placeholder="Search inventory..." oninput="filterInventory(this.value)"><button class="secondary" onclick="exportCSV()">Export CSV</button></div></div>
+ <table id="inventoryTable"><tr><th>PRODUCT</th><th>SKU</th><th>AVAILABLE</th><th>LOW LIMIT</th><th>COST VALUE</th><th>STATUS</th><th>ACTION</th></tr>
+ ${state.products.map(p=>{let s=stockStatus(p);return `<tr data-search="${esc((p.name+" "+p.sku).toLowerCase())}"><td>${esc(p.name)}</td><td>${esc(p.sku)}</td><td>${p.stock}</td><td>${p.threshold}</td><td>${money(p.stock*p.cost)}</td><td><span class="badge ${s[1]}">${s[0]}</span></td><td><button class="iconbtn" onclick="stock('${p.id}')">Adjust Stock</button></td></tr>`}).join("")}</table></div>
+ <div class="panel"><div class="panel-head"><h2>Recent Inventory Transactions</h2></div><div class="timeline">${state.transactions.slice(0,10).map(x=>`<div class="event"><b>${esc(x.text)}</b><span>${esc(x.date)} · ${esc(x.detail)}</span></div>`).join("")}</div></div>`;
+}
+function filterInventory(q){q=q.toLowerCase();document.querySelectorAll("#inventoryTable tr[data-search]").forEach(r=>r.style.display=r.dataset.search.includes(q)?"":"none")}
+function renderOrders(){
+ document.getElementById("orders").innerHTML=`<div class="panel"><div class="panel-head"><h2>Orders</h2><div class="tools"><input class="search" placeholder="Search order/customer..." oninput="filterOrders(this.value)"><select id="orderFilter" class="search" onchange="filterOrders(this.value)"><option value="">All Statuses</option><option>Pending</option><option>Confirmed</option><option>Processing</option><option>Dispatched</option><option>Delivered</option><option>Cancelled</option><option>Returned</option></select></div></div>
+ <table id="orderTable"><tr><th>ORDER</th><th>CUSTOMER</th><th>ITEMS</th><th>TOTAL</th><th>STATUS</th><th>ACTION</th></tr>${state.orders.map(o=>{let total=o.items.reduce((a,i)=>a+i.qty*i.price,0)+Number(o.delivery||0);return `<tr data-search="${esc((o.id+" "+o.customer+" "+o.status).toLowerCase())}"><td><b>${o.id}</b><br><small>${o.date}</small></td><td>${esc(o.customer)}<br><small>${esc(o.phone)}</small></td><td>${o.items.map(i=>`${esc(i.product)} ×${i.qty} @ ${money(i.price)}`).join("<br>")}</td><td>${money(total)}</td><td><span class="badge ${orderBadge(o.status)}">${o.status.toUpperCase()}</span></td><td><button class="iconbtn" onclick="openOrder('${o.id}')">Update Status</button></td></tr>`}).join("")}</table></div>`;
+}
+function orderBadge(s){return ["Delivered","Confirmed"].includes(s)?"green":["Cancelled","Returned"].includes(s)?"red":["Processing","Dispatched"].includes(s)?"orange":"gray"}
+function filterOrders(q){q=(q||"").toLowerCase();let status=document.getElementById("orderFilter")?.value?.toLowerCase()||"";document.querySelectorAll("#orderTable tr[data-search]").forEach(r=>r.style.display=(!q||r.dataset.search.includes(q))&&(!status||r.dataset.search.includes(status))?"":"none")}
+function openOrder(id){let o=state.orders.find(x=>x.id===id);if(!o)return;document.getElementById("orderModal").classList.add("open");document.getElementById("orderModal").dataset.id=id;document.getElementById("orderIdText").textContent=id;document.getElementById("newOrderStatus").value=o.status;document.getElementById("orderInfo").innerHTML=`<b>${esc(o.customer)}</b><br>${o.items.map(i=>`${esc(i.product)} × ${i.qty} — ${money(i.price)} each`).join("<br>")}`;}
+function closeOrder(){document.getElementById("orderModal").classList.remove("open")}
+function saveOrderStatus(){
+ let id=document.getElementById("orderModal").dataset.id,o=state.orders.find(x=>x.id===id),newS=document.getElementById("newOrderStatus").value;if(!o)return;
+ let old=o.status;o.status=newS;
+ if(old!=="Cancelled"&&newS==="Cancelled"){o.items.forEach(i=>{let p=state.products.find(x=>x.id===i.productId||x.name===i.product);if(p){p.stock+=i.qty;addTxn(`+${i.qty} — ${p.name}`,`Order ${o.id} cancelled · Inventory restored`,i.qty)}})}
+ if(old==="Cancelled"&&newS!=="Cancelled"){let can=o.items.every(i=>{let p=state.products.find(x=>x.id===i.productId||x.name===i.product);return p&&p.stock>=i.qty});if(!can){o.status=old;return toast("Not enough stock to reactivate this order.");}o.items.forEach(i=>{let p=state.products.find(x=>x.id===i.productId||x.name===i.product);p.stock-=i.qty;addTxn(`-${i.qty} — ${p.name}`,`Order ${o.id} reactivated · Inventory reduced`,-i.qty)})}
+ addActivity(`Order status changed — ${o.id}`,`${old} → ${o.status} · Tharindu`);persist();syncCustomerFromAdmin();closeOrder();renderAll();toast("Order status updated and customer tracking synchronized");
+}
+function renderCategories(){
+ document.getElementById("categories").innerHTML=`<div class="panel"><div class="panel-head"><h2>Categories</h2><button class="primary" onclick="openCategory()">＋ Add Category</button></div>
+ <table><tr><th>CATEGORY</th><th>SUB-CATEGORIES</th><th>PRODUCTS</th><th>STATUS</th><th>ACTION</th></tr>${state.categories.map((c,i)=>`<tr><td><b>${esc(c.name)}</b></td><td>${c.subs.map(esc).join(", ")||"—"}</td><td>${state.products.filter(p=>p.category===c.name).length}</td><td><span class="badge green">ACTIVE</span></td><td><button class="iconbtn" onclick="openCategory(${i})">Edit</button><button class="iconbtn" onclick="deleteCategory(${i})">Delete</button></td></tr>`).join("")}</table></div>`;
+}
+function openCategory(i=-1){document.getElementById("categoryModal").classList.add("open");document.getElementById("categoryModal").dataset.i=i;let c=i>=0?state.categories[i]:null;document.getElementById("catName").value=c?.name||"";document.getElementById("catSubs").value=c?.subs?.join(", ")||""}
+function closeCategory(){document.getElementById("categoryModal").classList.remove("open")}
+function saveCategory(){let i=Number(document.getElementById("categoryModal").dataset.i),name=document.getElementById("catName").value.trim(),subs=document.getElementById("catSubs").value.split(",").map(x=>x.trim()).filter(Boolean);if(!name)return toast("Category name is required");if(i>=0)state.categories[i]={...state.categories[i],name,subs};else state.categories.push({name,subs,products:0,status:"Active"});addActivity(i>=0?"Category updated":"Category created",name+" · Tharindu");persist();closeCategory();renderAll();toast(i>=0?"Category updated":"Category created")}
+function deleteCategory(i){let c=state.categories[i];if(state.products.some(p=>p.category===c.name))return toast("Cannot delete a category that has products.");if(!confirm(`Delete ${c.name}?`))return;state.categories.splice(i,1);persist();renderAll();toast("Category deleted")}
+function renderActivity(){document.getElementById("activity").innerHTML=`<div class="panel"><div class="panel-head"><h2>Product Activity Log</h2><button class="secondary" onclick="exportActivity()">Export Log</button></div><div class="timeline">${state.activity.slice(0,30).map(x=>`<div class="event"><b>${esc(x.text)}</b><span>${esc(x.date)} · ${esc(x.detail)}</span></div>`).join("")}</div></div>`}
+function renderSettings(){document.getElementById("settings").innerHTML=`<div class="grid2"><div class="panel"><h2 style="font-size:15px">Inventory Rules</h2>${toggleRow("Prevent overselling","preventOversell")}${toggleRow("Auto out-of-stock status","autoOut")}${toggleRow("Auto hide when out of stock","autoHide")}${toggleRow("Auto restore when stock added","autoRestore")}</div><div class="panel"><h2 style="font-size:15px">Store Settings</h2><div class="field"><label>Default Currency</label><select><option>LKR — Sri Lankan Rupee</option></select></div><div class="field"><label>Default Low Stock Threshold</label><input id="defaultThreshold" value="${state.settings.threshold}" type="number"></div><button class="primary" onclick="saveSettings()">Save Settings</button><button class="secondary" style="margin-left:7px" onclick="resetDemo()">Reset  Data</button></div></div>`}
+function toggleRow(label,key){return `<div class="switch">${label}<button class="toggle ${state.settings[key]?"on":""}" onclick="state.settings.${key}=!state.settings.${key};persist();renderSettings()"><i></i></button></div>`}
+function saveSettings(){state.settings.threshold=Number(document.getElementById("defaultThreshold").value||5);state.products.forEach(p=>{if(!p.threshold)p.threshold=state.settings.threshold});persist();renderAll();toast("Settings saved")}
+function resetDemo(){if(!confirm("Reset all local  changes and customer orders?"))return;state=clone(seed);localStorage.removeItem("ctmOrders");persist();renderAll();toast(" reset")}
+function exportCSV(){let rows=[["Product","SKU","Category","Price","Cost","Stock","Threshold","Status"],...state.products.map(p=>[p.name,p.sku,p.category,p.price,p.cost,p.stock,p.threshold,stockStatus(p)[0]])];download("inventory.csv",rows.map(r=>r.map(x=>`"${String(x).replaceAll('"','""')}"`).join(",")).join("\\n"))}
+function exportActivity(){download("activity-log.csv",[["Date","Action","Details"],...state.activity.map(x=>[x.date,x.text,x.detail])].map(r=>r.map(x=>`"${String(x).replaceAll('"','""')}"`).join(",")).join("\\n"))}
+function download(name,text){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:"text/csv"}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
+function toast(msg){let t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(window.tt);window.tt=setTimeout(()=>t.classList.remove("show"),2500)}
+window.addEventListener("storage",e=>{if(e.key==="ctmOrders"||e.key==="ctmStoreSync"){syncCustomerOrders();renderAll();}});
+document.addEventListener("DOMContentLoaded",()=>{
+ document.getElementById("productExtra").innerHTML=productExtraHTML();
+ document.getElementById("variationArea").innerHTML="";
+ if(!localStorage.getItem(STORE_KEY))persist();renderAll();
+});
+</script>
+</body>
+</html>
